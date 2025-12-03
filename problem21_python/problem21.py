@@ -1,37 +1,40 @@
 # -*- coding: utf-8 -*-
 """
-Created on Thu Nov 20 20:32:21 2025
+Created on Tue Dec  2 02:40:06 2025
 
 @author: soham
-
-This problem was asked by Facebook.
-Given the mapping a = 1, b = 2, ... z = 26, and an encoded message, count the number
-of ways it can be decoded.
-For example, the message ’111’ would give 3, since it could be decoded as ’aaa’, ’ka’,
-and ’ak’.
-You can assume that the messages are decodable. For example, ’001’ is not allowed.
-
 """
 
-import re
-import numpy as np
-
-# Get input from user
-ListInput  =  input('Enter your message:')
-# Print the user input for verification
-print('Here is your message', ListInput)
-
-# Let's store the input as an array
-b = np.array(ListInput, dtype = int)
-n = len(ListInput)
-i = 0
-a = np.zeros(n)
-
-while (b!=0):
-    r = b % 10
-    a[i] = r
-    b = int(b/10)
-    i = i + 1
-    
+from collections import defaultdict
 
 
+
+# def num_encodings(s, total=0):
+#     # There is no valid encoding if the string starts with 0.
+#     if s.startswith('0'):
+#         return 0
+#     # Both the empty string and a single character should return 1.
+#     elif len(s) <= 1:
+#         return 1
+#     total+= num_encodings(s[1:])
+#     if int(s[:2]) <= 26:
+#         total+= num_encodings(s[2:])
+#     return total
+
+
+def num_encodings(s):
+    cache= defaultdict(int)
+    cache[len(s)] = 1
+    for i in reversed(range(len(s))):
+        if s[i].startswith('0'):
+            cache[i] = 0
+        elif i == len(s) - 1:
+            cache[i] = 1
+        else:
+            cache[i] += cache[i + 1]
+            if int(s[i:i + 2]) <= 26:
+                cache[i] += cache[i + 2]
+    return cache[0]
+
+value = num_encodings("111")
+print(value)
